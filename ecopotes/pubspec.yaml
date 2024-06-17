@@ -20,6 +20,8 @@ dev_dependencies:
     sdk: flutter
 
   flutter_lints: ^2.0.0
+  flutter_native_splash: ^2.0.0
+  introduction_screen: ^2.0.0
 
 flutter:
   uses-material-design: true
@@ -30,3 +32,13 @@ flutter:
   assets:
     # Add assets from the images directory to the application.
     - assets/images/
+    - assets/images/splash.png
+
+# Add the specification for your splash screen
+flutter_native_splash:
+  android: true
+  ios: true
+  web: false
+
+  background_image: assets/images/splash.png
+  #color: "#FFFFFF"1

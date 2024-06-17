@@ -1,10 +1,18 @@
 // lib/screens/login_screen.dart
 import 'package:flutter/material.dart';
+import 'home.dart';
 
-class SigninScreen extends StatelessWidget {
+class SigninScreen extends StatefulWidget {
+  @override
+  _SigninScreenState createState() => _SigninScreenState();
+}
+
+class _SigninScreenState extends State<SigninScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  UserType _userType = UserType.user; // Default to user
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +35,29 @@ class SigninScreen extends StatelessWidget {
             key: _formKey,
             child: ListView(
               children: [
+                DropdownButton<UserType>(
+                  value: _userType,
+                  onChanged: (UserType? newValue) {
+                    setState(() {
+                      _userType = newValue!;
+                    });
+                  },
+                  items: <DropdownMenuItem<UserType>>[
+                    DropdownMenuItem<UserType>(
+                      value: UserType.user,
+                      child: Text("Se connecter en tant qu'utilisateur"),
+                    ),
+                    DropdownMenuItem<UserType>(
+                      value: UserType.admin,
+                      child: Text("Se connecter en tant qu'admin"),
+                    ),
+                    DropdownMenuItem<UserType>(
+                      value: UserType.mairie,
+                      child: Text("Se connecter en tant que mairie"),
+                    ),
+                  ],
+                ),
+
                 Image.asset('assets/images/logo_eco.png',
                     height: 150), // Add your logo
                 SizedBox(height: 20),
@@ -35,10 +66,18 @@ class SigninScreen extends StatelessWidget {
                 _buildTextField(
                     _passwordController, 'Mot de passe', Icons.lock),
                 SizedBox(height: 20),
+
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      Navigator.pushNamed(context, '/report');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => HomeScreen(
+                              userType: _userType,
+                              isAdmin: _userType == UserType.admin),
+                        ),
+                      );
                     }
                   },
                   child: Text('Se connecter'),
@@ -51,6 +90,7 @@ class SigninScreen extends StatelessWidget {
                     padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                   ),
                 ),
+
                 SizedBox(height: 20),
                 TextButton(
                   onPressed: () {

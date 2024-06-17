@@ -25,12 +25,12 @@ class _ReportScreenState extends State<ReportScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Signaler une enseigne',
-            style:
-                TextStyle(fontFamily: 'Roboto', fontWeight: FontWeight.bold)),
-        backgroundColor: Color.fromARGB(255, 74, 125, 255),
-      ),
+      //  appBar: AppBar(
+      //    title: const Text('Signaler une enseigne',
+      //        style:
+      //            TextStyle(fontFamily: 'Roboto', fontWeight: FontWeight.bold)),
+      //    backgroundColor: Color.fromARGB(255, 74, 125, 255),
+      //  ),
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
