@@ -37,11 +37,18 @@ class _CommunicationScreenState extends State<CommunicationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage(
+              "assets/images/sun_bg.png"), // Assurez-vous que le chemin vers l'image est correct
+          fit: BoxFit.cover,
+        ),
+      ),
       // appBar: AppBar(
       //  title: Text('Communication'),
       //  ),
-      body: Padding(
+      child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: <Widget>[
