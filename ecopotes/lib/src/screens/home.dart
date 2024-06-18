@@ -15,30 +15,31 @@ enum UserType {
 
 class HomeScreen extends StatefulWidget {
   final UserType userType; // Remplacez 'role' par 'userType'
-  HomeScreen({required this.userType, required bool isAdmin});
+  const HomeScreen({super.key, required this.userType, required bool isAdmin});
 
   @override
+  // ignore: library_private_types_in_public_api
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
-  List<Widget> _userOptions = <Widget>[
-    ReportScreen(),
-    CommunicationScreen(isAdmin: false),
-    ProfileScreen(),
+  final List<Widget> _userOptions = <Widget>[
+    const ReportScreen(),
+    const CommunicationScreen(isAdmin: false),
+    const ProfileScreen(),
   ];
 
-  List<Widget> _adminOptions = <Widget>[
+  final List<Widget> _adminOptions = <Widget>[
     ReportStatusScreen(),
-    ManageReportsScreen(),
+    const ManageReportsScreen(),
   ];
 
-  List<Widget> _mairieOptions = <Widget>[
+  final List<Widget> _mairieOptions = <Widget>[
     ReportListScreen(),
-    CommunicationScreen(isAdmin: true),
-    ProfileScreen(),
+    const CommunicationScreen(isAdmin: true),
+    const ProfileScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -99,9 +100,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Balance ton enseigne'),
-      ),
       body: options.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         items: items,

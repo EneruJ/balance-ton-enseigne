@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'home.dart';
 
 class SigninScreen extends StatefulWidget {
+  const SigninScreen({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _SigninScreenState createState() => _SigninScreenState();
 }
 
@@ -18,11 +21,11 @@ class _SigninScreenState extends State<SigninScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Connexion'),
-        backgroundColor: Color.fromARGB(255, 74, 125, 255),
+        title: const Text('Connexion'),
+        backgroundColor: const Color.fromARGB(255, 74, 255, 189),
       ),
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
             image:
                 AssetImage("assets/images/bg.png"), // replace with your image
@@ -30,7 +33,7 @@ class _SigninScreenState extends State<SigninScreen> {
           ),
         ),
         child: Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Form(
             key: _formKey,
             child: ListView(
@@ -42,7 +45,7 @@ class _SigninScreenState extends State<SigninScreen> {
                       _userType = newValue!;
                     });
                   },
-                  items: <DropdownMenuItem<UserType>>[
+                  items: const <DropdownMenuItem<UserType>>[
                     DropdownMenuItem<UserType>(
                       value: UserType.user,
                       child: Text("Se connecter en tant qu'utilisateur"),
@@ -60,12 +63,12 @@ class _SigninScreenState extends State<SigninScreen> {
 
                 Image.asset('assets/images/logo_eco.png',
                     height: 150), // Add your logo
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 _buildTextField(_emailController, 'Email', Icons.email),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 _buildTextField(
                     _passwordController, 'Mot de passe', Icons.lock),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
 
                 ElevatedButton(
                   onPressed: () {
@@ -80,26 +83,28 @@ class _SigninScreenState extends State<SigninScreen> {
                       );
                     }
                   },
-                  child: Text('Se connecter'),
                   style: ElevatedButton.styleFrom(
-                    primary: Color.fromARGB(255, 74, 125, 255),
-                    onPrimary: Colors.white,
+                    foregroundColor: Colors.white,
+                    backgroundColor: const Color.fromARGB(255, 74, 255, 152),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30), // <-- Add this
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 10),
                   ),
+                  child: const Text('Se connecter'),
                 ),
 
-                SizedBox(height: 20),
-                TextButton(
+                const SizedBox(height: 20),
+                ElevatedButton(
                   onPressed: () {
                     Navigator.pushNamed(context, '/signup');
                   },
-                  child: Text('Créer un nouveau compte'),
-                  style: TextButton.styleFrom(
-                    primary: Color.fromARGB(255, 74, 125, 255),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 88, 110,
+                        140), // Utilisez 'primary' pour définir la couleur de fond du bouton
                   ),
+                  child: const Text('Créer un nouveau compte'),
                 ),
               ],
             ),
@@ -120,7 +125,7 @@ class _SigninScreenState extends State<SigninScreen> {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30),
         ),
-        prefixIcon: Icon(icon, color: Color.fromARGB(255, 74, 125, 255)),
+        prefixIcon: Icon(icon, color: const Color.fromARGB(255, 74, 255, 152)),
       ),
       validator: (value) {
         if (value == null || value.isEmpty) {

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class NavigationBar extends StatelessWidget {
@@ -26,7 +25,7 @@ class NavigationBar extends StatelessWidget {
         ),
       ],
       currentIndex: selectedIndex,
-      selectedItemColor: Color.fromARGB(255, 21, 224, 92),
+      selectedItemColor: const Color.fromARGB(255, 21, 224, 92),
       onTap: onItemTapped,
     );
   }

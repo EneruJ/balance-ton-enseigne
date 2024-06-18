@@ -6,6 +6,7 @@ class ReportScreen extends StatefulWidget {
   const ReportScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _ReportScreenState createState() => _ReportScreenState();
 }
 
@@ -25,12 +26,9 @@ class _ReportScreenState extends State<ReportScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //  appBar: AppBar(
-      //    title: const Text('Signaler une enseigne',
-      //        style:
-      //            TextStyle(fontFamily: 'Roboto', fontWeight: FontWeight.bold)),
-      //    backgroundColor: Color.fromARGB(255, 74, 125, 255),
-      //  ),
+      appBar: AppBar(
+        title: const Text('Signaler une enseigne'),
+      ),
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
@@ -48,11 +46,15 @@ class _ReportScreenState extends State<ReportScreen> {
                 TextFormField(
                   controller: _storeNameController,
                   decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.black.withOpacity(
+                        0.5), // Changez ceci à la couleur que vous voulez
                     labelText: 'Nom de l\'enseigne',
-                    labelStyle: TextStyle(color: Colors.white),
-                    border: OutlineInputBorder(),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue, width: 2.0),
+                    labelStyle: const TextStyle(color: Colors.white),
+                    border: const OutlineInputBorder(),
+                    focusedBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Color.fromARGB(255, 249, 238, 90), width: 2.0),
                     ),
                   ),
                   validator: (value) {
@@ -62,15 +64,19 @@ class _ReportScreenState extends State<ReportScreen> {
                     return null;
                   },
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 TextFormField(
                   controller: _descriptionController,
                   decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.black.withOpacity(0.5), // Ajoutez ceci
                     labelText: 'Description',
-                    labelStyle: TextStyle(color: Colors.white),
-                    border: OutlineInputBorder(),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue, width: 2.0),
+                    labelStyle: const TextStyle(color: Colors.white),
+                    border: const OutlineInputBorder(),
+                    focusedBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Color.fromARGB(255, 187, 184, 135),
+                          width: 2.0),
                     ),
                   ),
                   validator: (value) {
@@ -80,26 +86,36 @@ class _ReportScreenState extends State<ReportScreen> {
                     return null;
                   },
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 _image == null
-                    ? Text('Aucune image sélectionnée.',
+                    ? const Text('Aucune image sélectionnée.',
                         style: TextStyle(color: Colors.white))
                     : Image.file(_image!),
                 ElevatedButton.icon(
-                  icon: Icon(Icons.camera_alt),
-                  label: Text('Prendre une photo'),
+                  icon: const Icon(Icons.camera_alt),
+                  label: const Text(
+                    'Prendre une photo',
+                    style: TextStyle(color: Color.fromARGB(255, 187, 142, 10)),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 249, 238,
+                        90), // Changez ceci à la couleur que vous voulez
+                  ),
                   onPressed: () {
                     // La logique de prise de photo serait ici
                   },
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 DropdownButtonFormField(
                   value: _location,
                   decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.black.withOpacity(
+                        0.5), // Changez ceci à la couleur que vous voulez
                     labelText: 'Lieu',
-                    labelStyle: TextStyle(color: Colors.white),
-                    border: OutlineInputBorder(),
-                    focusedBorder: OutlineInputBorder(
+                    labelStyle: const TextStyle(color: Colors.white),
+                    border: const OutlineInputBorder(),
+                    focusedBorder: const OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.blue, width: 2.0),
                     ),
                   ),
@@ -121,15 +137,22 @@ class _ReportScreenState extends State<ReportScreen> {
                     return null;
                   },
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton.icon(
-                  icon: Icon(Icons.send),
-                  label: Text('Envoyer'),
+                  icon: const Icon(Icons.send),
+                  label: const Text(
+                    'Envoyer',
+                    style: TextStyle(color: Color.fromARGB(255, 187, 142, 10)),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 249, 238,
+                        90), // Changez ceci à la couleur que vous voulez
+                  ),
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       // La logique d'envoi des données serait ici
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Signalement envoyé !')),
+                        const SnackBar(content: Text('Signalement envoyé !')),
                       );
                     }
                   },
