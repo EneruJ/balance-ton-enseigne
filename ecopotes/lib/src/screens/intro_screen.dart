@@ -1,10 +1,12 @@
 // lib/screens/intro_screen.dart
 import 'package:ecopotes/src/screens/signin.dart';
 import 'package:flutter/material.dart';
+// ignore: depend_on_referenced_packages
 import 'package:introduction_screen/introduction_screen.dart';
-import 'signup.dart';
 
 class IntroScreen extends StatelessWidget {
+  const IntroScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return IntroductionScreen(
@@ -33,12 +35,12 @@ class IntroScreen extends StatelessWidget {
       ],
       onDone: () {
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => SigninScreen()),
+          MaterialPageRoute(builder: (_) => const SigninScreen()),
         );
       },
       onSkip: () {
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => SigninScreen()),
+          MaterialPageRoute(builder: (_) => const SigninScreen()),
         );
       },
       showSkipButton: true,

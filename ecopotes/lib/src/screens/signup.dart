@@ -8,15 +8,17 @@ class SignupScreen extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  SignupScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Inscription'),
-        backgroundColor: Color.fromARGB(255, 74, 125, 255),
+        title: const Text('Inscription'),
+        backgroundColor: const Color.fromARGB(255, 249, 135, 230),
       ),
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
             image:
                 AssetImage("assets/images/bg.png"), // replace with your image
@@ -24,38 +26,39 @@ class SignupScreen extends StatelessWidget {
           ),
         ),
         child: Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Form(
             key: _formKey,
             child: ListView(
               children: [
                 Image.asset('assets/images/logo_eco.png',
                     height: 150), // Add your logo
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 _buildTextField(_nameController, 'Pseudo', Icons.person),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 _buildTextField(_emailController, 'Email', Icons.email),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 _buildTextField(
                     _passwordController, 'Mot de passe', Icons.lock),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 _buildTextField(_cityController, 'Ville', Icons.location_city),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      Navigator.pushNamed(context, '/report');
+                      Navigator.pushNamed(context, '/home');
                     }
                   },
-                  child: Text('S\'inscrire'),
                   style: ElevatedButton.styleFrom(
-                    primary: Color.fromARGB(255, 74, 125, 255),
-                    onPrimary: Colors.white,
+                    foregroundColor: Colors.white,
+                    backgroundColor: const Color.fromARGB(255, 249, 135, 230),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30), // <-- Add this
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 10),
                   ),
+                  child: const Text('S\'inscrire'),
                 ),
               ],
             ),
@@ -76,7 +79,10 @@ class SignupScreen extends StatelessWidget {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30),
         ),
-        prefixIcon: Icon(icon, color: Color.fromARGB(255, 74, 125, 255)),
+        prefixIcon: Icon(
+          icon,
+          color: const Color.fromARGB(255, 249, 135, 230),
+        ),
       ),
       validator: (value) {
         if (value == null || value.isEmpty) {

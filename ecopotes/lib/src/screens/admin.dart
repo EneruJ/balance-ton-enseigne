@@ -14,6 +14,8 @@ class AdminScreen extends StatelessWidget {
     // Ajoutez d'autres signalements ici
   ];
 
+  AdminScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

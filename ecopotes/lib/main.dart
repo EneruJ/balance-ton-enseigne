@@ -12,34 +12,33 @@ import 'package:ecopotes/src/screens/signup.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(BalanceTonEnseigneApp());
+  runApp(const BalanceTonEnseigneApp());
 }
 
 class BalanceTonEnseigneApp extends StatelessWidget {
+  const BalanceTonEnseigneApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Balance Ton Enseigne',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: IntroScreen(), // Démarrer avec l'écran de connexion
+
+      home: const IntroScreen(), // Démarrer avec l'écran de connexion
       routes: {
-        '/signin': (context) => SigninScreen(),
+        '/signin': (context) => const SigninScreen(),
         '/signup': (context) => SignupScreen(),
-        '/home': (context) => HomeScreen(
+        '/home': (context) => const HomeScreen(
               userType: UserType.user, // default value
               isAdmin: false, // default value
             ),
-        '/report': (context) => ReportScreen(),
+        '/report': (context) => const ReportScreen(),
         '/reportStatus': (context) => ReportStatusScreen(),
-        '/profile': (context) => ProfileScreen(),
-        '/manageReports': (context) => ManageReportsScreen(),
+        '/profile': (context) => const ProfileScreen(),
+        '/manageReports': (context) => const ManageReportsScreen(),
         '/admin': (context) => AdminScreen(),
 
         '/communication': (context) =>
-            CommunicationScreen(isAdmin: false), // default value
+            const CommunicationScreen(isAdmin: false), // default value
 
         '/reportList': (context) => ReportListScreen(),
       },
