@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 import ReportRepository from "../repositories/ReportRepository";
-import {validateModelSchema} from "../helpers/validateModelHelpers";
+import {validateModelSchema} from "../helpers/validateModelHelper";
 import {reportSchema} from "../models/Report";
 
 class ReportController {

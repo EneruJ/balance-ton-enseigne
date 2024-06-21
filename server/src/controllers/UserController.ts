@@ -1,7 +1,8 @@
 import {Request, Response} from "express";
 import UserRepository from "../repositories/UserRepository";
-import {validateModelSchema} from "../helpers/validateModelHelpers";
+import {validateModelSchema} from "../helpers/validateModelHelper";
 import {userSchemaCreate, userSchemaUpdate} from "../models/User";
+import {removeUserPassword} from "../helpers/passwordHelper";
 
 class UserController {
     static async create(request: Request, response: Response) {
@@ -30,7 +31,7 @@ class UserController {
                     status: 201,
                     statusText: "Created",
                     message: "User created successfully.",
-                    data: user[0],
+                    data: removeUserPassword(user[0]),
                 });
             }
         } catch (error) {
@@ -50,7 +51,7 @@ class UserController {
                 status: 200,
                 statusText: "OK",
                 message: "All users fetched successfully.",
-                data: results,
+                data: results.map(user => removeUserPassword(user)),
             });
         } catch (error) {
             return response.status(500).json({
@@ -76,7 +77,7 @@ class UserController {
                     status: 200,
                     statusText: "OK",
                     message: "User fetched successfully.",
-                    data: results[0],
+                    data: removeUserPassword(results[0]),
                 });
             }
         } catch (error) {
@@ -123,7 +124,7 @@ class UserController {
                         status: 200,
                         statusText: "OK",
                         message: "User updated successfully.",
-                        data: user[0],
+                        data: removeUserPassword(user[0]),
                     });
                 }
             }

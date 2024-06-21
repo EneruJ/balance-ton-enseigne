@@ -11,12 +11,12 @@ class UserRepository {
     }
 
     static async selectAll(): Promise<User[]> {
-        const [results] = await database.execute<User[]>("SELECT user_id, name, email, city, role, created_at, updated_at FROM User");
+        const [results] = await database.execute<User[]>("SELECT * FROM User");
         return results;
     }
 
     static async selectOneByUserId(userId: number): Promise<User[]> {
-        const [results] = await database.execute<User[]>("SELECT user_id, name, email, city, role, created_at, updated_at FROM User WHERE user_id = ?", [userId]);
+        const [results] = await database.execute<User[]>("SELECT * FROM User WHERE user_id = ?", [userId]);
         return results;
     }
 

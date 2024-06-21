@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 import RoleRepository from "../repositories/RoleRepository";
-import {validateModelSchema} from "../helpers/validateModelHelpers";
+import {validateModelSchema} from "../helpers/validateModelHelper";
 import {roleSchema} from "../models/Role";
 
 class RoleController {
