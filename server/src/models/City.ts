@@ -1,7 +1,7 @@
 import {RowDataPacket} from "mysql2";
 
 export default interface City extends RowDataPacket {
-    city_id?: number;
+    city_id: number;
     name: string;
     state: string;
     country: string;

@@ -1,7 +1,7 @@
 import {RowDataPacket} from "mysql2";
 
 export default interface Report extends RowDataPacket {
-    report_id?: number;
+    report_id: number;
     enseigne: string;
     description: string;
     location: string;

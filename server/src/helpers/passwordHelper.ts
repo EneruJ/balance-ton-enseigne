@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt';
+import User from "../models/User";
 
 export const hashPassword = async (password: string) => {
     try {
@@ -15,4 +16,9 @@ export const comparePassword = async (plaintextPassword: string, hashedPassword:
     } catch (error) {
         console.error("[server] Error comparing password: ", error);
     }
+}
+
+export const removeUserPassword = (user: User) => {
+    const {password, ...userWithoutPassword} = user;
+    return userWithoutPassword;
 }

@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 import CityRepository from "../repositories/CityRepository";
-import {validateModelSchema} from "../helpers/validateModelHelpers";
+import {validateModelSchema} from "../helpers/validateModelHelper";
 import {citySchema} from "../models/City";
 
 class CityController {

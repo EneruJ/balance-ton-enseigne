@@ -9,3 +9,5 @@ export const DB_PORT: string = process.env.DB_PORT ?? "3306";
 export const DB_DATABASE: string = process.env.DB_DATABASE ?? "database";
 export const DB_USER: string = process.env.DB_USERNAME ?? "user";
 export const DB_PASSWORD: string = process.env.DB_PASSWORD ?? "password";
+
+export const JWT_SECRET: string = process.env.JWT_SECRET ?? "secret";
