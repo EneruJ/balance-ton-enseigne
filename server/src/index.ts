@@ -3,14 +3,14 @@ import express, {Express} from "express";
 import {APP_PORT} from "./config/variables";
 import routes from "./routes";
 
-database.getConnection((err, connection) => {
-    if (err) {
-        console.error(`[server]: Unable to connect to the database: ${err}`);
-        return;
-    }
-    console.log(`[server]: Connected to the database.`);
-    database.releaseConnection(connection);
-});
+database.getConnection()
+    .then((connection) => {
+        console.log(`[server]: Connected to the database.`);
+        connection.release();
+    })
+    .catch((error) => {
+        console.error(`[server]: Unable to connect to the database: ${error}`);
+    });
 
 const app: Express = express();
 

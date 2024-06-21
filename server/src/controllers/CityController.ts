@@ -1,11 +1,11 @@
 import {Request, Response} from "express";
-import UserRepository from "../repositories/UserRepository";
+import CityRepository from "../repositories/CityRepository";
 import {validateModelSchema} from "../helpers/validateModelHelpers";
-import {userSchemaCreate, userSchemaUpdate} from "../models/User";
+import {citySchema} from "../models/City";
 
-class UserController {
+class CityController {
     static async create(request: Request, response: Response) {
-        const validateSchema: string|true = validateModelSchema(userSchemaCreate, request.body);
+        const validateSchema: string|true = validateModelSchema(citySchema, request.body);
 
         if (validateSchema !== true) {
             return response.status(400).json({
@@ -16,28 +16,28 @@ class UserController {
         }
 
         try {
-            const results = await UserRepository.selectOneByEmail(request.body.email);
+            const results = await CityRepository.selectOneByPostalCode(request.body.postal_code);
             if (results.length > 0) {
                 return response.status(400).json({
                     status: 400,
                     statusText: "Bad Request",
-                    message: "Email is already used.",
+                    message: "Entity already exists.",
                 });
             } else {
-                const results = await UserRepository.create(request.body);
-                const user = await UserRepository.selectOneByUserId(results.insertId);
+                const results = await CityRepository.create(request.body);
+                const city = await CityRepository.selectOneByCityId(results.insertId);
                 return response.status(201).json({
                     status: 201,
                     statusText: "Created",
-                    message: "User created successfully.",
-                    data: user[0],
+                    message: "City created successfully.",
+                    data: city[0],
                 });
             }
         } catch (error) {
             return response.status(500).json({
                 status: 500,
                 statusText: "Internal Server Error",
-                message: "An error occurred while trying to create the user.",
+                message: "An error occurred while trying to create the city.",
                 error: error,
             });
         }
@@ -45,18 +45,18 @@ class UserController {
 
     static async getAll(request: Request, response: Response) {
         try {
-            const results = await UserRepository.selectAll();
+            const results = await CityRepository.selectAll();
             return response.status(200).json({
                 status: 200,
                 statusText: "OK",
-                message: "All users fetched successfully.",
+                message: "All cities fetched successfully.",
                 data: results,
             });
         } catch (error) {
             return response.status(500).json({
                 status: 500,
                 statusText: "Internal Server Error",
-                message: "An error occurred while trying to get all users.",
+                message: "An error occurred while trying to get all cities.",
                 error: error,
             });
         }
@@ -64,18 +64,18 @@ class UserController {
 
     static async getOne(request: Request, response: Response) {
         try {
-            const results = await UserRepository.selectOneByUserId(Number(request.params.id));
+            const results = await CityRepository.selectOneByCityId(Number(request.params.id));
             if (results.length === 0) {
                 return response.status(404).json({
                     status: 404,
                     statusText: "Not Found",
-                    message: "User not found.",
+                    message: "City not found.",
                 });
             } else {
                 return response.status(200).json({
                     status: 200,
                     statusText: "OK",
-                    message: "User fetched successfully.",
+                    message: "City fetched successfully.",
                     data: results[0],
                 });
             }
@@ -83,14 +83,14 @@ class UserController {
             return response.status(500).json({
                 status: 500,
                 statusText: "Internal Server Error",
-                message: "An error occurred while trying to get the user.",
+                message: "An error occurred while trying to get the city.",
                 error: error,
             });
         }
     }
 
     static async update(request: Request, response: Response) {
-        const validateSchema: string|true = validateModelSchema(userSchemaUpdate, request.body);
+        const validateSchema: string|true = validateModelSchema(citySchema, request.body);
 
         if (validateSchema !== true) {
             return response.status(400).json({
@@ -101,29 +101,29 @@ class UserController {
         }
 
         try {
-            const results = await UserRepository.selectOneByUserId(Number(request.params.id));
+            const results = await CityRepository.selectOneByCityId(Number(request.params.id));
             if (results.length === 0) {
                 return response.status(404).json({
                     status: 404,
                     statusText: "Not Found",
-                    message: "User not found.",
+                    message: "City not found.",
                 });
             } else {
-                const results = await UserRepository.selectOneByEmail(request.body.email);
-                if (results.length > 0 && results[0].user_id !== Number(request.params.id)) {
+                const results = await CityRepository.selectOneByPostalCode(request.body.postal_code);
+                if (results.length > 0 && results[0].id !== Number(request.params.id)) {
                     return response.status(400).json({
                         status: 400,
                         statusText: "Bad Request",
-                        message: "Email is already used.",
+                        message: "Entity already exists.",
                     });
                 } else {
-                    await UserRepository.update(Number(request.params.id), request.body);
-                    const user = await UserRepository.selectOneByUserId(Number(request.params.id));
+                    await CityRepository.update(Number(request.params.id), request.body);
+                    const city = await CityRepository.selectOneByCityId(Number(request.params.id));
                     return response.status(200).json({
                         status: 200,
                         statusText: "OK",
-                        message: "User updated successfully.",
-                        data: user[0],
+                        message: "City updated successfully.",
+                        data: city[0],
                     });
                 }
             }
@@ -131,42 +131,7 @@ class UserController {
             return response.status(500).json({
                 status: 500,
                 statusText: "Internal Server Error",
-                message: "An error occurred while trying to update the user.",
-                error: error,
-            });
-        }
-    }
-
-    static async updatePassword(request: Request, response: Response) {
-        if (!request.body.password) {
-            return response.status(400).json({
-                status: 400,
-                statusText: "Bad Request",
-                message: "Invalid request body. Field 'password' is required.",
-            });
-        }
-
-        try {
-            const results = await UserRepository.selectOneByUserId(Number(request.params.id));
-            if (results.length === 0) {
-                return response.status(404).json({
-                    status: 404,
-                    statusText: "Not Found",
-                    message: "User not found.",
-                });
-            } else {
-                await UserRepository.updatePassword(Number(request.params.id), request.body.password);
-                return response.status(200).json({
-                    status: 200,
-                    statusText: "OK",
-                    message: "User password updated successfully.",
-                });
-            }
-        } catch (error) {
-            return response.status(500).json({
-                status: 500,
-                statusText: "Internal Server Error",
-                message: "An error occurred while trying to update the user password.",
+                message: "An error occurred while trying to update the city.",
                 error: error,
             });
         }
@@ -174,29 +139,29 @@ class UserController {
 
     static async delete(request: Request, response: Response) {
         try {
-            const results = await UserRepository.delete(Number(request.params.id));
+            const results = await CityRepository.delete(Number(request.params.id));
             if (results.affectedRows === 0) {
                 return response.status(404).json({
                     status: 404,
                     statusText: "Not Found",
-                    message: "User not found.",
+                    message: "City not found.",
                 });
             } else {
                 return response.status(204).json({
                     status: 204,
                     statusText: "No Content",
-                    message: "User deleted successfully.",
+                    message: "City deleted successfully.",
                 });
             }
         } catch (error) {
             return response.status(500).json({
                 status: 500,
                 statusText: "Internal Server Error",
-                message: "An error occurred while trying to delete the user.",
+                message: "An error occurred while trying to delete the city.",
                 error: error,
             });
         }
     }
 }
 
-export default UserController;
+export default CityController;

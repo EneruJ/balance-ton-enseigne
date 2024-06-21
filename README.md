@@ -1,9 +1,9 @@
-# balance-ton-enseigne
+# Balance ton enseigne
 
 ## Requirements
 
 ### Server
-- Node.js v20.13.1 (lts/iron)
+- Node.js v20.x.x (lts/iron)
 
 ## Installation
 

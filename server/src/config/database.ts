@@ -1,4 +1,4 @@
-import mysql, {Pool, PoolOptions} from "mysql2";
+import mysql, {Pool, PoolOptions} from "mysql2/promise";
 import {DB_DATABASE, DB_HOST, DB_PASSWORD, DB_PORT, DB_USER} from "./variables";
 
 const settings: PoolOptions = {
@@ -9,6 +9,6 @@ const settings: PoolOptions = {
     port: parseInt(DB_PORT),
 };
 
-const database: Pool = mysql.createPool(settings);
+const database: Pool = <Pool>mysql.createPool(settings);
 
 export default database;
