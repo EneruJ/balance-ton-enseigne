@@ -1,5 +1,11 @@
 // lib/screens/report_screen.dart
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_maps_webservice/places.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:io';
 
 class ReportScreen extends StatefulWidget {
@@ -14,14 +20,54 @@ class _ReportScreenState extends State<ReportScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _storeNameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-  String? _location;
+  final TextEditingController _locationController = TextEditingController();
+  LatLng? _location;
   File? _image;
+  GoogleMapsPlaces? _places;
 
-  final List<String> _locations = [
-    'Location 1',
-    'Location 2',
-    'Location 3'
-  ]; // Provide your locations here
+  Future<void> _getUserLocation() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      return Future.error('Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    Position position = await Geolocator.getCurrentPosition();
+
+    List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+    Placemark place = placemarks[0];
+
+    setState(() {
+      _locationController.text = '${place.street}, ${place.administrativeArea}, ${place.postalCode}, ${place.country}';
+      _location = LatLng(position.latitude, position.longitude);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _places = GoogleMapsPlaces(apiKey: dotenv.env['GOOGLE_MAPS_API_KEY']!);
+  }
+
+  Future<void> _takePicture() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.camera);
+
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    } else {
+      print('No image selected.');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,8 +93,8 @@ class _ReportScreenState extends State<ReportScreen> {
                   controller: _storeNameController,
                   decoration: InputDecoration(
                     filled: true,
-                    fillColor: Colors.black.withOpacity(
-                        0.5), // Changez ceci à la couleur que vous voulez
+                    fillColor: Colors.black.withOpacity(0.5),
+                    // Changez ceci à la couleur que vous voulez
                     labelText: 'Nom de l\'enseigne',
                     labelStyle: const TextStyle(color: Colors.white),
                     border: const OutlineInputBorder(),
@@ -57,6 +103,7 @@ class _ReportScreenState extends State<ReportScreen> {
                           color: Color.fromARGB(255, 249, 238, 90), width: 2.0),
                     ),
                   ),
+                  style: const TextStyle(color: Colors.white),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Veuillez entrer le nom de l\'enseigne';
@@ -69,7 +116,8 @@ class _ReportScreenState extends State<ReportScreen> {
                   controller: _descriptionController,
                   decoration: InputDecoration(
                     filled: true,
-                    fillColor: Colors.black.withOpacity(0.5), // Ajoutez ceci
+                    fillColor: Colors.black.withOpacity(0.5),
+                    // Ajoutez ceci
                     labelText: 'Description',
                     labelStyle: const TextStyle(color: Colors.white),
                     border: const OutlineInputBorder(),
@@ -79,6 +127,7 @@ class _ReportScreenState extends State<ReportScreen> {
                           width: 2.0),
                     ),
                   ),
+                  style: const TextStyle(color: Colors.white),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Veuillez décrire le problème';
@@ -101,17 +150,15 @@ class _ReportScreenState extends State<ReportScreen> {
                     backgroundColor: const Color.fromARGB(255, 249, 238,
                         90), // Changez ceci à la couleur que vous voulez
                   ),
-                  onPressed: () {
-                    // La logique de prise de photo serait ici
-                  },
+                  onPressed: _takePicture,
                 ),
                 const SizedBox(height: 20),
-                DropdownButtonFormField(
-                  value: _location,
+                TextFormField(
+                  readOnly: true,
+                  controller: _locationController,
                   decoration: InputDecoration(
                     filled: true,
-                    fillColor: Colors.black.withOpacity(
-                        0.5), // Changez ceci à la couleur que vous voulez
+                    fillColor: Colors.black.withOpacity(0.5),
                     labelText: 'Lieu',
                     labelStyle: const TextStyle(color: Colors.white),
                     border: const OutlineInputBorder(),
@@ -119,17 +166,8 @@ class _ReportScreenState extends State<ReportScreen> {
                       borderSide: BorderSide(color: Colors.blue, width: 2.0),
                     ),
                   ),
-                  items: _locations.map((location) {
-                    return DropdownMenuItem(
-                      value: location,
-                      child: Text(location),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _location = value as String;
-                    });
-                  },
+                  style: const TextStyle(color: Colors.white),
+                  onTap: _getUserLocation,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Veuillez choisir un lieu';
