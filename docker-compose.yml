@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: secretroot
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: database
+    volumes:
+      - ./data:/var/lib/mysql   # Volume pour les données MySQL
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d   # Volume pour le script init.sql
+    ports:
+      - "3306:3306"
+    networks:
+      - networkdocker
+
+networks:
+  networkdocker:
+    driver: bridge
