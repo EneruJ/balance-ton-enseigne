@@ -1,5 +1,6 @@
 import database from "./config/database";
 import express, {Express} from "express";
+import cors from 'cors';
 import {APP_PORT} from "./config/variables";
 import routes from "./routes";
 
@@ -13,6 +14,10 @@ database.getConnection()
     });
 
 const app: Express = express();
+
+app.disable('x-powered-by');
+
+app.use(cors());
 
 app.use(express.json());
 
