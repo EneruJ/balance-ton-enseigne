@@ -35,20 +35,20 @@ class _ReportScreenState extends State<ReportScreen> {
     }
 
     if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately.
-      return Future.error('Location permissions are permanently denied, we cannot request permissions.');
+      throw Exception('Location permissions are permanently denied.');
     }
 
     Position position = await Geolocator.getCurrentPosition();
 
     List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
-    Placemark place = placemarks[0];
+    Placemark place = placemarks.isNotEmpty ? placemarks[0] : Placemark();
 
     setState(() {
       _locationController.text = '${place.street}, ${place.administrativeArea}, ${place.postalCode}, ${place.country}';
       _location = LatLng(position.latitude, position.longitude);
     });
   }
+
 
   @override
   void initState() {

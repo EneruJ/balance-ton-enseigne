@@ -31,11 +31,13 @@ class BalanceTonEnseigneApp extends StatelessWidget {
         '/signup': (context) => SignupScreen(),
         '/home': (context) => const HomeScreen(
               userType: UserType.user, // default value
-              isAdmin: false, // default value
+              isAdmin: false,
+              token: null,
+              data: null // default value
             ),
         '/report': (context) => const ReportScreen(),
         '/reportStatus': (context) => ReportStatusScreen(),
-        '/profile': (context) => const ProfileScreen(),
+        '/profile': (context) => const ProfileScreen(data: null),
         '/manageReports': (context) => const ManageReportsScreen(),
         '/admin': (context) => AdminScreen(),
 

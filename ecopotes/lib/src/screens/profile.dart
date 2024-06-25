@@ -1,8 +1,52 @@
 // lib/screens/profile_screen.dart
-import 'package:flutter/material.dart';
+// ignore_for_file: prefer_interpolation_to_compose_strings
 
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+class ProfileScreen extends StatefulWidget {
+  final dynamic data;
+
+  const ProfileScreen({Key? key, required this.data}) : super(key: key);
+
+  @override
+  _ProfileScreenState createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  String? roleName;
+  String? cityName;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchRoleName(widget.data['user']['role']);
+    fetchCityName(widget.data['user']['city']);
+  }
+
+  Future<void> fetchRoleName(int roleId) async {
+    final response = await http.get(Uri.parse('http://localhost:3000/roles/$roleId'));
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body);
+      setState(() {
+        roleName = jsonData['data']['name'];
+      });
+    } else {
+      throw Exception('Failed to load role name');
+    }
+  }
+
+  Future<void> fetchCityName(int cityId) async {
+    final response = await http.get(Uri.parse('http://localhost:3000/cities/$cityId'));
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body);
+      setState(() {
+        cityName = jsonData['data']['name'];
+      });
+    } else {
+      throw Exception('Failed to load city name');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,25 +66,24 @@ class ProfileScreen extends StatelessWidget {
                     AssetImage('assets/images/profil.png'), // Placeholder image
               ),
               const SizedBox(height: 16),
-              const Text(
-                'Nom: John Doe',
-                style: TextStyle(fontSize: 18),
+              Text(
+                'Nom: ' + widget.data['user']['name'],
+                style: const TextStyle(fontSize: 18),
               ),
               const SizedBox(height: 8),
-              const Text(
-                'Email: john.doe@example.com',
-                style: TextStyle(fontSize: 18),
+              Text(
+                'Email: ' + widget.data['user']['email'],
+                style: const TextStyle(fontSize: 18),
               ),
               const SizedBox(height: 8),
-              const Text(
-                'Ville: Paris',
-                style: TextStyle(fontSize: 18),
+              Text(
+                'Ville: ' + cityName!,
+                style: const TextStyle(fontSize: 18),
               ),
               const SizedBox(height: 8),
-              const Text(
-                // Ajoutez ceci
-                'Statut: Admin',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              Text(
+                'Statut: ' + roleName!,
+                style: const TextStyle(fontSize: 18),
               ),
               const SizedBox(height: 24),
               ElevatedButton(

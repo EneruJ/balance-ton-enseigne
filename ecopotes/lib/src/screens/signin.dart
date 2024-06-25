@@ -1,12 +1,17 @@
 // lib/screens/login_screen.dart
+
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
 import 'home.dart';
 
 class SigninScreen extends StatefulWidget {
-  const SigninScreen({super.key});
+  const SigninScreen({Key? key}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
   _SigninScreenState createState() => _SigninScreenState();
 }
 
@@ -27,8 +32,7 @@ class _SigninScreenState extends State<SigninScreen> {
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image:
-                AssetImage("assets/images/bg.png"), // replace with your image
+            image: AssetImage("assets/images/bg.png"), // Replace with your image
             fit: BoxFit.cover,
           ),
         ),
@@ -71,18 +75,7 @@ class _SigninScreenState extends State<SigninScreen> {
                 const SizedBox(height: 20),
 
                 ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => HomeScreen(
-                              userType: _userType,
-                              isAdmin: _userType == UserType.admin),
-                        ),
-                      );
-                    }
-                  },
+                  onPressed: _login,
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,
                     backgroundColor: const Color.fromARGB(255, 74, 255, 152),
@@ -113,6 +106,59 @@ class _SigninScreenState extends State<SigninScreen> {
       ),
     );
   }
+
+  Future<void> _login() async {
+  if (_formKey.currentState!.validate()) {
+    const String apiUrl = 'http://localhost:3000/auth/login'; // Replace with your API endpoint
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'email': _emailController.text,
+          'password': _passwordController.text,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final responseBody = json.decode(response.body);
+        print('API Response: $responseBody');
+
+        // Récupérez et traitez la réponse de l'API ici
+        // Exemple: Navigation vers la page HomeScreen après une connexion réussie
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomeScreen(
+              userType: _userType,
+              isAdmin: responseBody['role'] == 'admin', // Exemple: Vérifiez le rôle pour isAdmin
+              token: responseBody['data']['token'],
+              data: responseBody['data']
+            ),
+          ),
+        );
+      } else {
+        print('Failed to login: ${response.statusCode}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Email ou mot de passe incorrect.'),
+          ),
+        );
+      }
+    } catch (e) {
+      print('Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Une erreur est survenue. Veuillez réessayer.'),
+        ),
+      );
+    }
+  }
+}
+
 
   Widget _buildTextField(
       TextEditingController controller, String labelText, IconData icon) {
