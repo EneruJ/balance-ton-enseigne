@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS database.User (
 CREATE TABLE IF NOT EXISTS database.Report (
   `report_id` INT NOT NULL AUTO_INCREMENT,
   `enseigne` VARCHAR(45) NULL,
-  `description` VARCHAR(45) NULL,
+  `description` VARCHAR(255) NULL,
   `location` VARCHAR(45) NULL,
   `photoUrl` VARCHAR(45) NULL,
   `city` INT NOT NULL,

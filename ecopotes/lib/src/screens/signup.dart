@@ -1,5 +1,7 @@
 // lib/screens/signup_screen.dart
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class SignupScreen extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
@@ -44,11 +46,7 @@ class SignupScreen extends StatelessWidget {
                 _buildTextField(_cityController, 'Ville', Icons.location_city),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      Navigator.pushNamed(context, '/home');
-                    }
-                  },
+                  onPressed: () => _signup(context),
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,
                     backgroundColor: const Color.fromARGB(255, 249, 135, 230),
@@ -66,6 +64,46 @@ class SignupScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _signup(BuildContext context) async {
+    if (_formKey.currentState!.validate()) {
+      const String apiUrl = 'http://localhost:3000/Users';
+
+      try {
+        final response = await http.post(
+          Uri.parse(apiUrl),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode(<String, dynamic>{
+            'name': _nameController.text,
+            'email': _emailController.text,
+            'password': _passwordController.text,
+            'city': 1, // assuming city is a string here
+            'role': 2, // assuming role is 1 for a new user, you can adjust it
+          }),
+        );
+
+        if (response.statusCode == 201) { // assuming 201 is the success status code
+          Navigator.pushNamed(context, '/signin');
+        } else {
+          print('Failed to sign up: ${response.statusCode}');
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Erreur lors de l\'inscription.'),
+            ),
+          );
+        }
+      } catch (e) {
+        print('Error: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Une erreur est survenue. Veuillez réessayer.'),
+          ),
+        );
+      }
+    }
   }
 
   Widget _buildTextField(

@@ -34,20 +34,18 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
   List<Widget> _userOptions = [];
-
   List<Widget> _adminOptions = [];
-
   List<Widget> _mairieOptions = [];
 
   @override
   void initState() {
     super.initState();
-    
+
     // Initialize options based on user type
     if (widget.userType == UserType.user) {
       _userOptions = [
         const ReportScreen(),
-        ReportListScreen(),
+        ReportListScreen(data: widget.data),
         CommunicationScreen(isAdmin: false),
         ProfileScreen(data: widget.data),
       ];
@@ -58,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ];
     } else if (widget.userType == UserType.mairie) {
       _mairieOptions = [
-        ReportListScreen(),
+        ReportListScreen(data: widget.data),
         CommunicationScreen(isAdmin: true),
         ProfileScreen(data: widget.data),
       ];
@@ -84,7 +82,9 @@ class _HomeScreenState extends State<HomeScreen> {
         items: _bottomNavBarItems(),
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.blue,
+        unselectedItemColor: Colors.grey,
         onTap: _onItemTapped,
+        type: BottomNavigationBarType.fixed, // Ensures that all items are visible
       ),
     );
   }

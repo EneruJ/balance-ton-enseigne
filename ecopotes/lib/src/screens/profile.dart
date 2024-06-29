@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+
 class ProfileScreen extends StatefulWidget {
   final dynamic data;
 
@@ -58,12 +59,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center, // Ajoutez ceci
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               const CircleAvatar(
                 radius: 50,
-                backgroundImage:
-                    AssetImage('assets/images/profil.png'), // Placeholder image
+                backgroundImage: AssetImage('assets/images/profil.png'), // Placeholder image
               ),
               const SizedBox(height: 16),
               Text(
@@ -77,12 +77,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               const SizedBox(height: 8),
               Text(
-                'Ville: ' + cityName!,
+                'Ville: ' + (cityName ?? 'Chargement...'),
                 style: const TextStyle(fontSize: 18),
               ),
               const SizedBox(height: 8),
               Text(
-                'Statut: ' + roleName!,
+                'Statut: ' + (roleName ?? 'Chargement...'),
                 style: const TextStyle(fontSize: 18),
               ),
               const SizedBox(height: 24),
@@ -90,7 +90,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 onPressed: () {
                   // Logique de déconnexion ou de modification du profil ici
                   ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Modifier le profil')));
+                    const SnackBar(content: Text('Modifier le profil')),
+                  );
                 },
                 child: const Text('Modifier le profil'),
               ),
