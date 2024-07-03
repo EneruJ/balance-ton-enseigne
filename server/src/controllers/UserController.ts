@@ -3,6 +3,7 @@ import UserRepository from "../repositories/UserRepository";
 import {validateModelSchema} from "../helpers/validateModelHelper";
 import {userSchemaCreate, userSchemaUpdate} from "../models/User";
 import {removeUserPassword} from "../helpers/passwordHelper";
+import ReportRepository from "../repositories/ReportRepository";
 
 class UserController {
     static async create(request: Request, response: Response) {
@@ -85,6 +86,34 @@ class UserController {
                 status: 500,
                 statusText: "Internal Server Error",
                 message: "An error occurred while trying to get the user.",
+                error: error,
+            });
+        }
+    }
+
+    static async getReports(request: Request, response: Response) {
+        try {
+            const results = await UserRepository.selectOneByUserId(Number(request.params.id));
+            if (results.length === 0) {
+                return response.status(404).json({
+                    status: 404,
+                    statusText: "Not Found",
+                    message: "User not found.",
+                });
+            } else {
+                const reports = await ReportRepository.selectAllByUserId(Number(request.params.id));
+                return response.status(200).json({
+                    status: 200,
+                    statusText: "OK",
+                    message: "User reports fetched successfully.",
+                    data: reports,
+                });
+            }
+        } catch (error) {
+            return response.status(500).json({
+                status: 500,
+                statusText: "Internal Server Error",
+                message: "An error occurred while trying to get the user reports.",
                 error: error,
             });
         }
