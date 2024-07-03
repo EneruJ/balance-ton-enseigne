@@ -44,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // Initialize options based on user type
     if (widget.userType == UserType.user) {
       _userOptions = [
-        const ReportScreen(),
+        ReportScreen(data: widget.data),
         ReportListScreen(data: widget.data),
         CommunicationScreen(isAdmin: false),
         ProfileScreen(data: widget.data),
