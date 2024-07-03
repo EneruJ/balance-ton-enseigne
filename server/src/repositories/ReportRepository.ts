@@ -13,6 +13,11 @@ class ReportRepository {
         return results;
     }
 
+    static async selectAllByUserId(userId: number): Promise<Report[]> {
+        const [results] = await database.execute<Report[]>("SELECT * FROM Report WHERE user_id = ?", [userId]);
+        return results;
+    }
+
     static async selectOneByReportId(reportId: number): Promise<Report[]> {
         const [results] = await database.execute<Report[]>("SELECT * FROM Report WHERE report_id = ?", [reportId]);
         return results;
