@@ -51,8 +51,8 @@ class _HomeScreenState extends State<HomeScreen> {
       ];
     } else if (widget.userType == UserType.admin) {
       _adminOptions = [
-        ReportStatusScreen(),
-        const ManageReportsScreen(),
+        ReportStatusScreen(data: widget.data),
+        ManageReportsScreen(data: widget.data),
       ];
     } else if (widget.userType == UserType.mairie) {
       _mairieOptions = [

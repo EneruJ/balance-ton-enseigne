@@ -109,7 +109,7 @@ class _SigninScreenState extends State<SigninScreen> {
 
   Future<void> _login() async {
   if (_formKey.currentState!.validate()) {
-    const String apiUrl = 'http://locahost:3000/auth/login'; // Replace with your API endpoint
+    const String apiUrl = 'http://localhost:3000/auth/login'; // Replace with your API endpoint
 
     try {
       final response = await http.post(

@@ -49,14 +49,20 @@ class BalanceTonEnseigneApp extends StatelessWidget {
                 builder: (_) => ReportScreen(data: args['data']),
             );
           case '/reportStatus':
-            return MaterialPageRoute(builder: (_) => ReportStatusScreen());
+            final args = settings.arguments as Map<String, dynamic>;
+            return MaterialPageRoute(
+              builder: (_) => ReportStatusScreen(data: args['data']),
+            );
           case '/profile':
             final args = settings.arguments as Map<String, dynamic>;
             return MaterialPageRoute(
               builder: (_) => ProfileScreen(data: args['data']),
             );
           case '/manageReports':
-            return MaterialPageRoute(builder: (_) => const ManageReportsScreen());
+            final args = settings.arguments as Map<String, dynamic>;
+            return MaterialPageRoute(
+              builder: (_) => ManageReportsScreen(data: args['data']),
+            );
           case '/admin':
             return MaterialPageRoute(builder: (_) => AdminScreen());
           case '/communication':

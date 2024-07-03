@@ -72,7 +72,7 @@ class _ReportScreenState extends State<ReportScreen> {
   }
 
   Future<void> _sendData() async {
-    const String apiUrl = "http://10.192.64.109:3000/reports";
+    const String apiUrl = "http://localhost:3000/reports";
 
     _formData['created_at'] = _formData['created_at'].toIso8601String();
     _formData['updated_at'] = _formData['updated_at'].toIso8601String();
