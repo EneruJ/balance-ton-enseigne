@@ -1,4 +1,6 @@
 // lib/screens/report_screen.dart
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -6,10 +8,13 @@ import 'package:google_maps_webservice/places.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart' as http;
 import 'dart:io';
 
 class ReportScreen extends StatefulWidget {
-  const ReportScreen({super.key});
+  final dynamic data;
+
+  const ReportScreen({super.key, required this.data});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -21,9 +26,25 @@ class _ReportScreenState extends State<ReportScreen> {
   final TextEditingController _storeNameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
+  final TextEditingController _photoUrlController = TextEditingController();
+  final TextEditingController _cityController = TextEditingController();
+  int? userId;
+
   LatLng? _location;
   File? _image;
   GoogleMapsPlaces? _places;
+
+  final Map<String, dynamic> _formData = {
+    'enseigne': null,
+    'description': null,
+    'location': null,
+    'photoUrl': null,
+    'city': null,
+    'user_id': null,
+    'status': null,
+    'created_at': null,
+    'updated_at': null,
+  };
 
   Future<void> _getUserLocation() async {
     LocationPermission permission = await Geolocator.checkPermission();
@@ -44,26 +65,83 @@ class _ReportScreenState extends State<ReportScreen> {
     Placemark place = placemarks.isNotEmpty ? placemarks[0] : Placemark();
 
     setState(() {
-      _locationController.text = '${place.street}, ${place.administrativeArea}, ${place.postalCode}, ${place.country}';
       _location = LatLng(position.latitude, position.longitude);
+      _locationController.text = '${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.postalCode}, ${place.country}';
+      _cityController.text = place.locality!;
     });
   }
 
+  Future<void> _sendData() async {
+    const String apiUrl = "http://localhost:3000/reports";
+
+    _formData['created_at'] = _formData['created_at'].toIso8601String();
+    _formData['updated_at'] = _formData['updated_at'].toIso8601String();
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(_formData),
+      );
+      print(jsonEncode(_formData));
+      if (response.statusCode == 201) {
+        print('Report submitted successfully');
+      } else {
+        print('Failed to submit report');
+      }
+    } catch (e) {
+      print('Error sending report: $e');
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     _places = GoogleMapsPlaces(apiKey: dotenv.env['GOOGLE_MAPS_API_KEY']!);
+    userId = widget.data['user']['user_id'];
   }
 
   Future<void> _takePicture() async {
     final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.camera);
+    final pickedFile = await picker.pickImage(source: ImageSource.camera); // or ImageSource.camera
 
     if (pickedFile != null) {
-      setState(() {
-        _image = File(pickedFile.path);
-      });
+      final File imageFile = File(pickedFile.path);
+      String cloudinaryUrl = 'https://api.cloudinary.com/v1_1/dmugctz8s/image/upload';
+      String apiKey = dotenv.env['CLOUDINARY_API_KEY']!;
+      int timestamp = DateTime.now().millisecondsSinceEpoch;
+
+      var request = http.MultipartRequest('POST', Uri.parse(cloudinaryUrl))
+        ..fields['upload_preset'] = 'xwoarndc'
+        ..fields['api_key'] = apiKey
+        ..fields['timestamp'] = timestamp.toString()
+      // Add more parameters as needed
+        ..files.add(await http.MultipartFile.fromPath(
+          'file',
+          imageFile.path,
+        ));
+
+      print('Fields: ${request.fields}');
+      print('Files: ${request.files}');
+
+      var response = await request.send();
+
+      if (response.statusCode == 200) {
+        var responseData = await response.stream.bytesToString();
+        var decoded = jsonDecode(responseData);
+        var imageUrl = decoded['secure_url'];
+        print('Upload successful: $imageUrl');
+        setState(() {
+          _image = imageFile;
+          _formData['photoUrl'] = imageUrl;
+          _photoUrlController.text = imageUrl;
+        });
+      } else {
+        print('Failed to upload image. Status code: ${response.statusCode}');
+        response.stream.transform(utf8.decoder).listen((value) {
+          print(value);
+        });
+      }
     } else {
       print('No image selected.');
     }
@@ -186,11 +264,33 @@ class _ReportScreenState extends State<ReportScreen> {
                     backgroundColor: const Color.fromARGB(255, 249, 238,
                         90), // Changez ceci à la couleur que vous voulez
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      // La logique d'envoi des données serait ici
+                      // Stockez les valeurs du formulaire dans _formData
+                      _formData['enseigne'] = _storeNameController.text;
+                      _formData['description'] = _descriptionController.text;
+                      _formData['location'] = _locationController.text;
+                      _formData['photoUrl'] = _photoUrlController.text;
+                      _formData['city'] = 1;
+                      _formData['user_id'] = userId;
+                      _formData['status'] = "En attente de validation";
+                      _formData['created_at'] = DateTime.now();
+                      _formData['updated_at'] = DateTime.now();
+
+                      // Send the data
+                      await _sendData(); // Await the completion of _sendData
+
+                      // Assuming success, redirect to ReportListScreen
+                      Navigator.pushNamed(context, '/reportList', arguments: {
+                        'data': widget.data,
+                      });
+
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Signalement envoyé !')),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Echec du signalement')),
                       );
                     }
                   },

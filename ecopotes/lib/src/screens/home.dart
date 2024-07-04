@@ -44,15 +44,15 @@ class _HomeScreenState extends State<HomeScreen> {
     // Initialize options based on user type
     if (widget.userType == UserType.user) {
       _userOptions = [
-        const ReportScreen(),
+        ReportScreen(data: widget.data),
         ReportListScreen(data: widget.data),
         CommunicationScreen(isAdmin: false),
         ProfileScreen(data: widget.data),
       ];
     } else if (widget.userType == UserType.admin) {
       _adminOptions = [
-        ReportStatusScreen(),
-        const ManageReportsScreen(),
+        ReportStatusScreen(data: widget.data),
+        ManageReportsScreen(data: widget.data),
       ];
     } else if (widget.userType == UserType.mairie) {
       _mairieOptions = [

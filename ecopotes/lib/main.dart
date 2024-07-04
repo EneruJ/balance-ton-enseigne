@@ -20,6 +20,8 @@ Future main() async {
 class BalanceTonEnseigneApp extends StatelessWidget {
   const BalanceTonEnseigneApp({super.key});
 
+  get args => null;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -42,16 +44,25 @@ class BalanceTonEnseigneApp extends StatelessWidget {
               ),
             );
           case '/report':
-            return MaterialPageRoute(builder: (_) => const ReportScreen());
+            final args = settings.arguments as Map<String, dynamic>;
+            return MaterialPageRoute(
+                builder: (_) => ReportScreen(data: args['data']),
+            );
           case '/reportStatus':
-            return MaterialPageRoute(builder: (_) => ReportStatusScreen());
+            final args = settings.arguments as Map<String, dynamic>;
+            return MaterialPageRoute(
+              builder: (_) => ReportStatusScreen(data: args['data']),
+            );
           case '/profile':
             final args = settings.arguments as Map<String, dynamic>;
             return MaterialPageRoute(
               builder: (_) => ProfileScreen(data: args['data']),
             );
           case '/manageReports':
-            return MaterialPageRoute(builder: (_) => const ManageReportsScreen());
+            final args = settings.arguments as Map<String, dynamic>;
+            return MaterialPageRoute(
+              builder: (_) => ManageReportsScreen(data: args['data']),
+            );
           case '/admin':
             return MaterialPageRoute(builder: (_) => AdminScreen());
           case '/communication':
