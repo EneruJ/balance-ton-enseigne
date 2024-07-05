@@ -1,9 +1,9 @@
-import City from "../models/City";
+import City, {CitySchema} from "../models/City";
 import database from "../config/database";
 import {ResultSetHeader} from "mysql2";
 
 class CityRepository {
-    static async create(city: City): Promise<ResultSetHeader> {
+    static async create(city: CitySchema): Promise<ResultSetHeader> {
         const [results] = await database.execute<ResultSetHeader>("INSERT INTO city (name, state, country, postal_code, latitude, longitude, timezone, population, area, details) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [city.name, city.state, city.country, city.postal_code, city.latitude, city.longitude, city.timezone, city.population, city.area, city.details]);
         return results;
     }

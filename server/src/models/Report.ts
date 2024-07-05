@@ -13,7 +13,17 @@ export default interface Report extends RowDataPacket {
     updated_at?: Date;
 }
 
-export const reportSchema: { [key: string]: string } = {
+export interface ReportSchema {
+    enseigne: string;
+    description: string;
+    location: string;
+    photoUrl: string;
+    city: number;
+    user_id: number;
+    status: string;
+}
+
+export const reportSchemaObject: { [key: string]: string } = {
     enseigne: "string",
     description: "string",
     location: "string",

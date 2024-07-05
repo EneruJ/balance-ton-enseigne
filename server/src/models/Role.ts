@@ -5,6 +5,10 @@ export default interface Role extends RowDataPacket {
     name: string;
 }
 
-export const roleSchema: { [key: string]: string } = {
+export interface RoleSchema {
+    name: string,
+}
+
+export const roleSchemaObject: { [key: string]: string } = {
     name: "string",
 }

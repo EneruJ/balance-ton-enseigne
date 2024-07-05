@@ -1,11 +1,11 @@
 import {Request, Response} from "express";
 import RoleRepository from "../repositories/RoleRepository";
 import {validateModelSchema} from "../helpers/validateModelHelper";
-import {roleSchema} from "../models/Role";
+import {roleSchemaObject} from "../models/Role";
 
 class RoleController {
     static async create(request: Request, response: Response) {
-        const validateSchema: string|true = validateModelSchema(roleSchema, request.body);
+        const validateSchema: string|true = validateModelSchema(roleSchemaObject, request.body);
 
         if (validateSchema !== true) {
             return response.status(400).json({
@@ -90,7 +90,7 @@ class RoleController {
     }
 
     static async update(request: Request, response: Response) {
-        const validateSchema: string|true = validateModelSchema(roleSchema, request.body);
+        const validateSchema: string|true = validateModelSchema(roleSchemaObject, request.body);
 
         if (validateSchema !== true) {
             return response.status(400).json({

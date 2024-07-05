@@ -3,7 +3,7 @@ export default interface Login {
     password: string;
 }
 
-export const loginSchema: { [key: string]: string } = {
+export const loginSchemaObject: { [key: string]: string } = {
     email: "string",
     password: "string",
 }

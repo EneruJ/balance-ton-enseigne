@@ -1,9 +1,9 @@
-import Role from "../models/Role";
+import Role, {RoleSchema} from "../models/Role";
 import database from "../config/database";
 import {ResultSetHeader} from "mysql2";
 
 class RoleRepository {
-    static async create(role: Role): Promise<ResultSetHeader> {
+    static async create(role: RoleSchema): Promise<ResultSetHeader> {
         const [results] = await database.execute<ResultSetHeader>("INSERT INTO Role (name) VALUES (?)", [role.name]);
         return results;
     }

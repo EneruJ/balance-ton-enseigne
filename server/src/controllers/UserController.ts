@@ -1,13 +1,13 @@
 import {Request, Response} from "express";
 import UserRepository from "../repositories/UserRepository";
 import {validateModelSchema} from "../helpers/validateModelHelper";
-import {userSchemaCreate, userSchemaUpdate} from "../models/User";
+import {createUserSchemaObject, updateUserSchemaObject} from "../models/User";
 import {removeUserPassword} from "../helpers/passwordHelper";
 import ReportRepository from "../repositories/ReportRepository";
 
 class UserController {
     static async create(request: Request, response: Response) {
-        const validateSchema: string|true = validateModelSchema(userSchemaCreate, request.body);
+        const validateSchema: string|true = validateModelSchema(createUserSchemaObject, request.body);
 
         if (validateSchema !== true) {
             return response.status(400).json({
@@ -120,7 +120,7 @@ class UserController {
     }
 
     static async update(request: Request, response: Response) {
-        const validateSchema: string|true = validateModelSchema(userSchemaUpdate, request.body);
+        const validateSchema: string|true = validateModelSchema(updateUserSchemaObject, request.body);
 
         if (validateSchema !== true) {
             return response.status(400).json({

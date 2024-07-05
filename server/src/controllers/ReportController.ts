@@ -1,11 +1,11 @@
 import {Request, Response} from "express";
 import ReportRepository from "../repositories/ReportRepository";
 import {validateModelSchema} from "../helpers/validateModelHelper";
-import {reportSchema} from "../models/Report";
+import {reportSchemaObject} from "../models/Report";
 
 class ReportController {
     static async create(request: Request, response: Response) {
-        const validateSchema: string|true = validateModelSchema(reportSchema, request.body);
+        const validateSchema: string|true = validateModelSchema(reportSchemaObject, request.body);
 
         if (validateSchema !== true) {
             return response.status(400).json({
@@ -90,7 +90,7 @@ class ReportController {
     }
 
     static async update(request: Request, response: Response) {
-        const validateSchema: string|true = validateModelSchema(reportSchema, request.body);
+        const validateSchema: string|true = validateModelSchema(reportSchemaObject, request.body);
 
         if (validateSchema !== true) {
             return response.status(400).json({

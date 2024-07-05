@@ -1,9 +1,9 @@
-import Report from "../models/Report";
+import Report, {ReportSchema} from "../models/Report";
 import database from "../config/database";
 import {ResultSetHeader} from "mysql2";
 
 class ReportRepository {
-    static async create(report: Report): Promise<ResultSetHeader> {
+    static async create(report: ReportSchema): Promise<ResultSetHeader> {
         const [results] = await database.execute<ResultSetHeader>("INSERT INTO Report (enseigne, description, location, photoUrl, city, user_id, status) VALUES (?, ?, ?, ?, ?, ?, ?)", [report.enseigne, report.description, report.location, report.photoUrl, report.city, report.user_id, report.status]);
         return results;
     }

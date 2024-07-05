@@ -14,3 +14,4 @@
 
 # Environment variables
 **/.env
+**/.env.test

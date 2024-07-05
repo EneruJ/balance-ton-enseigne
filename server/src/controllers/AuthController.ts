@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import {loginSchema} from "../models/Login";
+import {loginSchemaObject} from "../models/Login";
 import {validateModelSchema} from "../helpers/validateModelHelper";
 import UserRepository from "../repositories/UserRepository";
 import {comparePassword, removeUserPassword} from "../helpers/passwordHelper";
@@ -10,7 +10,7 @@ import User from "../models/User";
 
 class AuthController {
     static async login(request: Request, response: Response) {
-        const validateSchema: string|true = validateModelSchema(loginSchema, request.body);
+        const validateSchema: string|true = validateModelSchema(loginSchemaObject, request.body);
 
         if (validateSchema !== true) {
             return response.status(400).json({

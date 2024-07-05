@@ -1,6 +1,12 @@
 import dotenv from "dotenv";
 
-dotenv.config();
+export const TEST_ENV = process.env.NODE_ENV;
+
+if (TEST_ENV === "test") {
+    dotenv.config({ path: ".env.test" });
+} else {
+    dotenv.config();
+}
 
 export const APP_PORT: string = process.env.APP_PORT ?? "3000";
 

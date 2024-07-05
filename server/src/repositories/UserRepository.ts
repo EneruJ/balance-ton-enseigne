@@ -1,10 +1,10 @@
-import User from "../models/User";
+import User, {CreateUserSchema} from "../models/User";
 import database from "../config/database";
 import {hashPassword} from "../helpers/passwordHelper";
 import {ResultSetHeader} from "mysql2";
 
 class UserRepository {
-    static async create(user: User): Promise<ResultSetHeader> {
+    static async create(user: CreateUserSchema): Promise<ResultSetHeader> {
         const hashedPassword = await hashPassword(user.password);
         const [results] = await database.execute<ResultSetHeader>("INSERT INTO User (name, email, password, city, role) VALUES (?, ?, ?, ?, ?)", [user.name, user.email, hashedPassword, user.city, user.role]);
         return results;

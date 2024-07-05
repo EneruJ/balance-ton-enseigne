@@ -1,11 +1,11 @@
 import {Request, Response} from "express";
 import CityRepository from "../repositories/CityRepository";
 import {validateModelSchema} from "../helpers/validateModelHelper";
-import {citySchema} from "../models/City";
+import {citySchemaObject} from "../models/City";
 
 class CityController {
     static async create(request: Request, response: Response) {
-        const validateSchema: string|true = validateModelSchema(citySchema, request.body);
+        const validateSchema: string|true = validateModelSchema(citySchemaObject, request.body);
 
         if (validateSchema !== true) {
             return response.status(400).json({
@@ -90,7 +90,7 @@ class CityController {
     }
 
     static async update(request: Request, response: Response) {
-        const validateSchema: string|true = validateModelSchema(citySchema, request.body);
+        const validateSchema: string|true = validateModelSchema(citySchemaObject, request.body);
 
         if (validateSchema !== true) {
             return response.status(400).json({
