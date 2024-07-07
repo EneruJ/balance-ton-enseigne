@@ -1,12 +1,11 @@
 import {Request, Response} from "express";
 import ReportRepository from "../repositories/ReportRepository";
-import {validateModelSchema} from "../helpers/validateModelHelper";
+import {validateModelId, validateModelSchema} from "../helpers/validateHelpers";
 import {reportSchemaObject} from "../models/Report";
 
 class ReportController {
     static async create(request: Request, response: Response) {
         const validateSchema: string|true = validateModelSchema(reportSchemaObject, request.body);
-
         if (validateSchema !== true) {
             return response.status(400).json({
                 status: 400,
@@ -63,6 +62,15 @@ class ReportController {
     }
 
     static async getOne(request: Request, response: Response) {
+        const validateId = validateModelId(request.params.id);
+        if (!validateId) {
+            return response.status(400).json({
+                status: 400,
+                statusText: "Bad Request",
+                message: "Invalid id.",
+            });
+        }
+
         try {
             const results = await ReportRepository.selectOneByReportId(Number(request.params.id));
             if (results.length === 0) {
@@ -90,8 +98,16 @@ class ReportController {
     }
 
     static async update(request: Request, response: Response) {
-        const validateSchema: string|true = validateModelSchema(reportSchemaObject, request.body);
+        const validateId = validateModelId(request.params.id);
+        if (!validateId) {
+            return response.status(400).json({
+                status: 400,
+                statusText: "Bad Request",
+                message: "Invalid id.",
+            });
+        }
 
+        const validateSchema: string|true = validateModelSchema(reportSchemaObject, request.body);
         if (validateSchema !== true) {
             return response.status(400).json({
                 status: 400,
@@ -138,11 +154,28 @@ class ReportController {
     }
 
     static async updateStatus(request: Request, response: Response) {
+        const validateId = validateModelId(request.params.id);
+        if (!validateId) {
+            return response.status(400).json({
+                status: 400,
+                statusText: "Bad Request",
+                message: "Invalid id.",
+            });
+        }
+
         if (!request.body.status) {
             return response.status(400).json({
                 status: 400,
                 statusText: "Bad Request",
                 message: "Invalid request body. Field 'status' is required.",
+            });
+        }
+
+        if(typeof request.body.status !== "string") {
+            return response.status(400).json({
+                status: 400,
+                statusText: "Bad Request",
+                message: "Invalid request body. Field 'status' has an invalid type (expected string).",
             });
         }
 
@@ -175,6 +208,15 @@ class ReportController {
     }
 
     static async delete(request: Request, response: Response) {
+        const validateId = validateModelId(request.params.id);
+        if (!validateId) {
+            return response.status(400).json({
+                status: 400,
+                statusText: "Bad Request",
+                message: "Invalid id.",
+            });
+        }
+
         try {
             const results = await ReportRepository.delete(Number(request.params.id));
             if (results.affectedRows === 0) {
@@ -184,11 +226,7 @@ class ReportController {
                     message: "Report not found.",
                 });
             } else {
-                return response.status(204).json({
-                    status: 204,
-                    statusText: "No Content",
-                    message: "Report deleted successfully.",
-                });
+                return response.sendStatus(204);
             }
         } catch (error) {
             return response.status(500).json({

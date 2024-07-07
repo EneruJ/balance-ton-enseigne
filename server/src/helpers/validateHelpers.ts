@@ -11,3 +11,7 @@ export const validateModelSchema = (schema: any, data: any): string|true => {
 
     return true;
 }
+
+export const  validateModelId = (id: string): boolean => {
+    return !isNaN(Number(id)) && Number.isInteger(Number(id))  && Number(id) > 0;
+}

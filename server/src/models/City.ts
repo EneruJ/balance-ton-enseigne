@@ -6,11 +6,11 @@ export default interface City extends RowDataPacket {
     state: string;
     country: string;
     postal_code: string;
-    latitude: number;
-    longitude: number;
+    latitude: string;
+    longitude: string;
     timezone: string;
-    population: number;
-    area: number;
+    population: string;
+    area: string;
     details: string;
 }
 
@@ -19,11 +19,11 @@ export interface CitySchema {
     state: string;
     country: string;
     postal_code: string;
-    latitude: number;
-    longitude: number;
+    latitude: string;
+    longitude: string;
     timezone: string;
-    population: number;
-    area: number;
+    population: string;
+    area: string;
     details: string;
 }
 
@@ -32,10 +32,10 @@ export const citySchemaObject: { [key: string]: string } = {
     state: "string",
     country: "string",
     postal_code: "string",
-    latitude: "number",
-    longitude: "number",
+    latitude: "string",
+    longitude: "string",
     timezone: "string",
-    population: "number",
-    area: "number",
+    population: "string",
+    area: "string",
     details: "string",
 }

@@ -1,12 +1,13 @@
 import {Request, Response} from "express";
 import CityRepository from "../repositories/CityRepository";
-import {validateModelSchema} from "../helpers/validateModelHelper";
+import {validateModelId, validateModelSchema} from "../helpers/validateHelpers";
 import {citySchemaObject} from "../models/City";
+import UserRepository from "../repositories/UserRepository";
+import ReportRepository from "../repositories/ReportRepository";
 
 class CityController {
     static async create(request: Request, response: Response) {
         const validateSchema: string|true = validateModelSchema(citySchemaObject, request.body);
-
         if (validateSchema !== true) {
             return response.status(400).json({
                 status: 400,
@@ -21,7 +22,7 @@ class CityController {
                 return response.status(400).json({
                     status: 400,
                     statusText: "Bad Request",
-                    message: "Entity already exists.",
+                    message: "City already exists.",
                 });
             } else {
                 const results = await CityRepository.create(request.body);
@@ -63,6 +64,15 @@ class CityController {
     }
 
     static async getOne(request: Request, response: Response) {
+        const validateId = validateModelId(request.params.id);
+        if (!validateId) {
+            return response.status(400).json({
+                status: 400,
+                statusText: "Bad Request",
+                message: "Invalid id.",
+            });
+        }
+
         try {
             const results = await CityRepository.selectOneByCityId(Number(request.params.id));
             if (results.length === 0) {
@@ -90,8 +100,16 @@ class CityController {
     }
 
     static async update(request: Request, response: Response) {
-        const validateSchema: string|true = validateModelSchema(citySchemaObject, request.body);
+        const validateId = validateModelId(request.params.id);
+        if (!validateId) {
+            return response.status(400).json({
+                status: 400,
+                statusText: "Bad Request",
+                message: "Invalid id.",
+            });
+        }
 
+        const validateSchema: string|true = validateModelSchema(citySchemaObject, request.body);
         if (validateSchema !== true) {
             return response.status(400).json({
                 status: 400,
@@ -110,11 +128,11 @@ class CityController {
                 });
             } else {
                 const results = await CityRepository.selectOneByPostalCode(request.body.postal_code);
-                if (results.length > 0 && results[0].id !== Number(request.params.id)) {
+                if (results.length > 0 && results[0].city_id !== Number(request.params.id)) {
                     return response.status(400).json({
                         status: 400,
                         statusText: "Bad Request",
-                        message: "Entity already exists.",
+                        message: "City already exists.",
                     });
                 } else {
                     await CityRepository.update(Number(request.params.id), request.body);
@@ -138,7 +156,34 @@ class CityController {
     }
 
     static async delete(request: Request, response: Response) {
+        const validateId = validateModelId(request.params.id);
+        if (!validateId) {
+            return response.status(400).json({
+                status: 400,
+                statusText: "Bad Request",
+                message: "Invalid id.",
+            });
+        }
+
         try {
+            const dependencyUserCheck = await UserRepository.selectAllByCityId(Number(request.params.id));
+            if (dependencyUserCheck.length > 0) {
+                return response.status(400).json({
+                    status: 400,
+                    statusText: "Bad Request",
+                    message: "City has user dependencies.",
+                });
+            } else {
+                const dependencyReportCheck = await ReportRepository.selectAllByCityId(Number(request.params.id));
+                if (dependencyReportCheck.length > 0) {
+                    return response.status(400).json({
+                        status: 400,
+                        statusText: "Bad Request",
+                        message: "City has report dependencies.",
+                    });
+                }
+            }
+
             const results = await CityRepository.delete(Number(request.params.id));
             if (results.affectedRows === 0) {
                 return response.status(404).json({
@@ -147,11 +192,7 @@ class CityController {
                     message: "City not found.",
                 });
             } else {
-                return response.status(204).json({
-                    status: 204,
-                    statusText: "No Content",
-                    message: "City deleted successfully.",
-                });
+                return response.sendStatus(204);
             }
         } catch (error) {
             return response.status(500).json({

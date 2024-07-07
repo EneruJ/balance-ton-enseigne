@@ -15,6 +15,16 @@ class UserRepository {
         return results;
     }
 
+    static async selectAllByRoleId(roleId: number): Promise<User[]> {
+        const [results] = await database.execute<User[]>("SELECT * FROM User WHERE role = ?", [roleId]);
+        return results;
+    }
+
+    static async selectAllByCityId(cityId: number): Promise<User[]> {
+        const [results] = await database.execute<User[]>("SELECT * FROM User WHERE city = ?", [cityId]);
+        return results;
+    }
+
     static async selectOneByUserId(userId: number): Promise<User[]> {
         const [results] = await database.execute<User[]>("SELECT * FROM User WHERE user_id = ?", [userId]);
         return results;

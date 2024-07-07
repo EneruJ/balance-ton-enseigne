@@ -10,6 +10,10 @@ import RoleRepository from "../repositories/RoleRepository";
 import UserRepository from "../repositories/UserRepository";
 import ReportRepository from "../repositories/ReportRepository";
 
+const NUMBER_OF_CITIES = 3;
+const NUMBER_OF_USERS = 6;
+const NUMBER_OF_REPORTS = 12;
+
 export default async function initializeTestDatabase(connexion: PoolConnection) {
     await createTablesFromSqlFile(connexion);
     await insertFakeData();
@@ -46,7 +50,7 @@ async function insertFakeData() {
 }
 
 async function insertFakeCities() {
-    const cities = generateCities(5);
+    const cities = generateCities(NUMBER_OF_CITIES);
     try {
         for (const city of cities) {
             await CityRepository.create(city);
@@ -70,7 +74,7 @@ async function insertFakeRoles() {
 }
 
 async function insertFakeUsers() {
-    const users = await generateUsers(5, 5);
+    const users = await generateUsers(NUMBER_OF_USERS, NUMBER_OF_CITIES);
     try {
         for (const user of users) {
             await UserRepository.create(user);
@@ -82,7 +86,7 @@ async function insertFakeUsers() {
 }
 
 async function insertFakeReports() {
-    const reports = generateReports(10, 5, 5);
+    const reports = generateReports(NUMBER_OF_REPORTS, NUMBER_OF_CITIES, NUMBER_OF_USERS);
     try {
         for (const report of reports) {
             await ReportRepository.create(report);

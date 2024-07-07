@@ -1,12 +1,12 @@
 import {Request, Response} from "express";
 import RoleRepository from "../repositories/RoleRepository";
-import {validateModelSchema} from "../helpers/validateModelHelper";
+import {validateModelId, validateModelSchema} from "../helpers/validateHelpers";
 import {roleSchemaObject} from "../models/Role";
+import UserRepository from "../repositories/UserRepository";
 
 class RoleController {
     static async create(request: Request, response: Response) {
         const validateSchema: string|true = validateModelSchema(roleSchemaObject, request.body);
-
         if (validateSchema !== true) {
             return response.status(400).json({
                 status: 400,
@@ -21,7 +21,7 @@ class RoleController {
                 return response.status(400).json({
                     status: 400,
                     statusText: "Bad Request",
-                    message: "Entity already exists.",
+                    message: "Role already exists.",
                 });
             } else {
                 const results = await RoleRepository.create(request.body);
@@ -63,6 +63,15 @@ class RoleController {
     }
 
     static async getOne(request: Request, response: Response) {
+        const validateId: boolean = validateModelId(request.params.id);
+        if (!validateId) {
+            return response.status(400).json({
+                status: 400,
+                statusText: "Bad Request",
+                message: "Invalid id.",
+            });
+        }
+
         try {
             const results = await RoleRepository.selectOneByRoleId(Number(request.params.id));
             if (results.length === 0) {
@@ -90,8 +99,16 @@ class RoleController {
     }
 
     static async update(request: Request, response: Response) {
-        const validateSchema: string|true = validateModelSchema(roleSchemaObject, request.body);
+        const validateId: boolean = validateModelId(request.params.id);
+        if (!validateId) {
+            return response.status(400).json({
+                status: 400,
+                statusText: "Bad Request",
+                message: "Invalid id.",
+            });
+        }
 
+        const validateSchema: string|true = validateModelSchema(roleSchemaObject, request.body);
         if (validateSchema !== true) {
             return response.status(400).json({
                 status: 400,
@@ -114,7 +131,7 @@ class RoleController {
                     return response.status(400).json({
                         status: 400,
                         statusText: "Bad Request",
-                        message: "Entity already exists.",
+                        message: "Role already exists.",
                     });
                 } else {
                     await RoleRepository.update(Number(request.params.id), request.body);
@@ -138,7 +155,25 @@ class RoleController {
     }
 
     static async delete(request: Request, response: Response) {
+        const validateId: boolean = validateModelId(request.params.id);
+        if (!validateId) {
+            return response.status(400).json({
+                status: 400,
+                statusText: "Bad Request",
+                message: "Invalid id.",
+            });
+        }
+
         try {
+            const dependencyUserCheck = await UserRepository.selectAllByRoleId(Number(request.params.id));
+            if (dependencyUserCheck.length > 0) {
+                return response.status(400).json({
+                    status: 400,
+                    statusText: "Bad Request",
+                    message: "Role has user dependencies.",
+                });
+            }
+
             const results = await RoleRepository.delete(Number(request.params.id));
             if (results.affectedRows === 0) {
                 return response.status(404).json({
@@ -147,11 +182,7 @@ class RoleController {
                     message: "Role not found.",
                 });
             } else {
-                return response.status(204).json({
-                    status: 204,
-                    statusText: "No Content",
-                    message: "Role deleted successfully.",
-                });
+                return response.sendStatus(204);
             }
         } catch (error) {
             return response.status(500).json({

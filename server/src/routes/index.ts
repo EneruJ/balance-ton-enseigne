@@ -8,7 +8,11 @@ import usersRoutes from "./usersRoutes";
 const routes: Router = Router();
 
 routes.get("/", (request: Request, response: Response) => {
-    response.json("Connected to API.");
+    response.status(200).json({
+        status: 200,
+        statusText: "OK",
+        message: "Welcome to the API.",
+    });
 });
 
 routes.use("/auth", authRoutes);

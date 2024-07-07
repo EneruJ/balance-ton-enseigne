@@ -11,6 +11,16 @@ export default interface User extends RowDataPacket {
     updated_at: Date;
 }
 
+export interface UserWithoutPassword {
+    user_id: number;
+    name: string;
+    email: string;
+    city: number;
+    role: number;
+    created_at: Date;
+    updated_at: Date;
+}
+
 export interface CreateUserSchema {
     name: string;
     email: string;

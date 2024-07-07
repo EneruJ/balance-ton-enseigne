@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 import {loginSchemaObject} from "../models/Login";
-import {validateModelSchema} from "../helpers/validateModelHelper";
+import {validateModelSchema} from "../helpers/validateHelpers";
 import UserRepository from "../repositories/UserRepository";
 import {comparePassword, removeUserPassword} from "../helpers/passwordHelper";
 import {generateToken} from "../helpers/jwtHelper";
@@ -11,7 +11,6 @@ import User from "../models/User";
 class AuthController {
     static async login(request: Request, response: Response) {
         const validateSchema: string|true = validateModelSchema(loginSchemaObject, request.body);
-
         if (validateSchema !== true) {
             return response.status(400).json({
                 status: 400,
@@ -62,11 +61,7 @@ class AuthController {
     }
 
     static async logout(request: Request, response: Response) {
-        return response.status(204).json({
-            status: 204,
-            statusText: "No Content",
-            message: "Logout successful.",
-        });
+        return response.sendStatus(204);
     }
 
     static async current(request: Request, response: Response) {
@@ -80,7 +75,7 @@ class AuthController {
                 return response.status(200).json({
                     status: 200,
                     statusText: "OK",
-                    message: "User found.",
+                    message: "Current user fetched successfully.",
                     data: removeUserPassword(results[0]),
                 });
             } catch (error) {

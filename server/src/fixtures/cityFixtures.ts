@@ -7,11 +7,11 @@ export function generateCity(): CitySchema {
         state: faker.location.state(),
         country: faker.location.country(),
         postal_code: faker.location.zipCode(),
-        latitude: faker.location.latitude(),
-        longitude: faker.location.longitude(),
+        latitude: faker.location.latitude().toString(),
+        longitude: faker.location.longitude().toString(),
         timezone: faker.location.timeZone(),
-        population: faker.number.int(1000000),
-        area: faker.number.float(1000),
+        population: faker.number.int(1000000).toString(),
+        area: faker.number.float(1000).toString(),
         details: faker.lorem.sentence(3),
     };
 }

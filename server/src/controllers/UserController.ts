@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 import UserRepository from "../repositories/UserRepository";
-import {validateModelSchema} from "../helpers/validateModelHelper";
+import {validateModelId, validateModelSchema} from "../helpers/validateHelpers";
 import {createUserSchemaObject, updateUserSchemaObject} from "../models/User";
 import {removeUserPassword} from "../helpers/passwordHelper";
 import ReportRepository from "../repositories/ReportRepository";
@@ -65,6 +65,15 @@ class UserController {
     }
 
     static async getOne(request: Request, response: Response) {
+        const validateId = validateModelId(request.params.id);
+        if (!validateId) {
+            return response.status(400).json({
+                status: 400,
+                statusText: "Bad Request",
+                message: "Invalid id.",
+            });
+        }
+
         try {
             const results = await UserRepository.selectOneByUserId(Number(request.params.id));
             if (results.length === 0) {
@@ -92,6 +101,15 @@ class UserController {
     }
 
     static async getReports(request: Request, response: Response) {
+        const validateId = validateModelId(request.params.id);
+        if (!validateId) {
+            return response.status(400).json({
+                status: 400,
+                statusText: "Bad Request",
+                message: "Invalid id.",
+            });
+        }
+
         try {
             const results = await UserRepository.selectOneByUserId(Number(request.params.id));
             if (results.length === 0) {
@@ -120,8 +138,16 @@ class UserController {
     }
 
     static async update(request: Request, response: Response) {
-        const validateSchema: string|true = validateModelSchema(updateUserSchemaObject, request.body);
+        const validateId = validateModelId(request.params.id);
+        if (!validateId) {
+            return response.status(400).json({
+                status: 400,
+                statusText: "Bad Request",
+                message: "Invalid id.",
+            });
+        }
 
+        const validateSchema: string|true = validateModelSchema(updateUserSchemaObject, request.body);
         if (validateSchema !== true) {
             return response.status(400).json({
                 status: 400,
@@ -168,6 +194,15 @@ class UserController {
     }
 
     static async updatePassword(request: Request, response: Response) {
+        const validateId = validateModelId(request.params.id);
+        if (!validateId) {
+            return response.status(400).json({
+                status: 400,
+                statusText: "Bad Request",
+                message: "Invalid id.",
+            });
+        }
+
         if (!request.body.password) {
             return response.status(400).json({
                 status: 400,
@@ -203,6 +238,15 @@ class UserController {
     }
 
     static async delete(request: Request, response: Response) {
+        const validateId = validateModelId(request.params.id);
+        if (!validateId) {
+            return response.status(400).json({
+                status: 400,
+                statusText: "Bad Request",
+                message: "Invalid id.",
+            });
+        }
+
         try {
             const results = await UserRepository.delete(Number(request.params.id));
             if (results.affectedRows === 0) {
@@ -212,11 +256,7 @@ class UserController {
                     message: "User not found.",
                 });
             } else {
-                return response.status(204).json({
-                    status: 204,
-                    statusText: "No Content",
-                    message: "User deleted successfully.",
-                });
+                return response.sendStatus(204);
             }
         } catch (error) {
             return response.status(500).json({
